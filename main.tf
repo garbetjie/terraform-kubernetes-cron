@@ -26,6 +26,7 @@ resource kubernetes_cron_job cron {
               name = "cron-job"
               image = var.image
               image_pull_policy = var.image_pull_policy
+              args = var.args
 
               dynamic "env" {
                 for_each = var.env

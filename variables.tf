@@ -6,8 +6,13 @@ variable namespace {
   type = string
 }
 
-variable command {
+variable schedule {
+  type = string
+}
+
+variable args {
   type = list(string)
+  default = []
 }
 
 variable labels {
@@ -18,10 +23,6 @@ variable labels {
 variable image_pull_policy {
   type = string
   default = "Always"
-}
-
-variable schedule {
-  type = string
 }
 
 variable env {
@@ -55,7 +56,7 @@ variable concurrency_policy {
 
 variable wait_for_rollout {
   type = bool
-  default = false
+  default = true
 }
 
 locals {
