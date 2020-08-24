@@ -40,7 +40,7 @@ variable mount_host_path {
   default = null
 }
 
-variable secret_volumes {
+variable volumes_from_secrets {
   type = list(object({ secret = string, path = string, items = set(string) }))
   default = []
 }

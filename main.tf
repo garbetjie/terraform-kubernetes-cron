@@ -55,7 +55,7 @@ resource kubernetes_cron_job cron {
               }
 
               dynamic "volume_mount" {
-                for_each = var.secret_volumes
+                for_each = var.volumes_from_secrets
                 content {
                   mount_path = volume_mount.value.path
                   name = "secret-${volume_mount.value.secret}"
@@ -75,7 +75,7 @@ resource kubernetes_cron_job cron {
             }
 
             dynamic "volume" {
-              for_each = var.secret_volumes
+              for_each = var.volumes_from_secrets
               content {
                 name = "secret-${volume.value.secret}"
                 secret {
