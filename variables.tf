@@ -35,12 +35,12 @@ variable env_from_secrets {
   default = []
 }
 
-variable mount_host_path {
-  type = string
+variable mount_host_paths {
+  type = map(string)
   default = null
 }
 
-variable volumes_from_secrets {
+variable mount_secrets {
   type = list(object({ secret = string, path = string, items = set(string) }))
   default = []
 }
@@ -59,6 +59,21 @@ variable wait_for_rollout {
   default = true
 }
 
+variable tolerations {
+  type = list(object({ key = string, value = string }))
+  default = []
+}
+
 locals {
   labels = merge(var.labels, { cron-job = var.name })
+  
+  mount_host_paths = {
+    for key, value in var.mount_host_paths:
+      "hosts-${sha256(key, 0, 4)}" => { host_path = key, mount_path = value }
+  }
+
+  mount_secrets = {
+    for key, value in var.mount_secrets:
+      "secret-${value.secret}" => value
+  }
 }

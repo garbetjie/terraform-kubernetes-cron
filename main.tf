@@ -23,7 +23,7 @@ resource kubernetes_cron_job cron {
 
           spec {
             container {
-              name = "cron-job"
+              name = "cron"
               image = var.image
               image_pull_policy = var.image_pull_policy
               args = var.args
@@ -46,38 +46,46 @@ resource kubernetes_cron_job cron {
               }
 
               dynamic "volume_mount" {
-                for_each = var.mount_host_path == null ? [] : [var.mount_host_path]
+                for_each = local.mount_host_paths
 
                 content {
-                  mount_path = split(":", volume_mount.value)[1]
-                  name = "src"
+                  mount_path = volume_mount.value.mount_path
+                  name = volume_mount.key
                 }
               }
 
               dynamic "volume_mount" {
-                for_each = var.volumes_from_secrets
+                for_each = local.mount_secrets
                 content {
                   mount_path = volume_mount.value.path
-                  name = "secret-${volume_mount.value.secret}"
+                  name = volume_mount.key
                 }
               }
             }
 
-            dynamic "volume" {
-              for_each = var.mount_host_path == null ? [] : [var.mount_host_path]
+            dynamic "toleration" {
+              for_each = var.tolerations
               content {
-                name = "src"
+                key = toleration.value.key
+                value = toleration.value.value
+              }
+            }
+
+            dynamic "volume" {
+              for_each = local.mount_host_paths
+              content {
+                name = volume.key
                 host_path {
-                  path = split(":", volume.value)[0]
+                  path = volume.value.host_path
                   type = "Directory"
                 }
               }
             }
 
             dynamic "volume" {
-              for_each = var.volumes_from_secrets
+              for_each = local.mount_secrets
               content {
-                name = "secret-${volume.value.secret}"
+                name = volume.key
                 secret {
                   secret_name = volume.value.secret
                   optional = false
