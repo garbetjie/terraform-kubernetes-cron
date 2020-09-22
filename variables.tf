@@ -37,7 +37,7 @@ variable env_from_secrets {
 
 variable mount_host_paths {
   type = map(string)
-  default = null
+  default = {}
 }
 
 variable mount_secrets {
