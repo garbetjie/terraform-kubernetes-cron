@@ -22,6 +22,8 @@ resource kubernetes_cron_job cron {
           }
 
           spec {
+            node_selector = var.node_selector
+
             container {
               name = "cron"
               image = var.image

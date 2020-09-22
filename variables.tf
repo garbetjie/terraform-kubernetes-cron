@@ -64,9 +64,14 @@ variable tolerations {
   default = []
 }
 
+variable node_selector {
+  type = map(string)
+  default = {}
+}
+
 locals {
   labels = merge(var.labels, { cron-job = var.name })
-  
+
   mount_host_paths = {
     for key, value in var.mount_host_paths:
       "hosts-${sha256(key, 0, 4)}" => { host_path = key, mount_path = value }
